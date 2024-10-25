@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <ul>
+                <li><a href="#">Мой профиль</a></li>
+                <li><a href="#">Мои траты</a></li>
+                <li><a href="#">Настройки</a></li>
+                <li><a href="{% url 'logout' %}">Выйти</a></li>
+            </ul>
+        </nav>
+        <main class="posts">
+            <h2>Посты</h2>
+            {% for post in posts %}
+                <div class="post">
+                    <h3>{{ post.user.username }}</h3>
+                    <p>{{ post.description }}</p>
+                    {% if post.photo %}
+                        <img src="{{ post.photo.url }}" alt="Post Image">
+                    {% endif %}
+                    {% if post.video %}
+                        <video controls src="{{ post.video.url }}"></video>
+                    {% endif %}
+                    <a href="{% url 'like-post' post.pk %}">Лайкнуть</a>
+                </div>
+            {% endfor %}
+        </main>
+        <aside class="users-not-followed">
+            <h2>Неподписанные профили</h2>
+            {% for profile in not_followed_profiles %}
+                <div class="profile">
+                    <img src="{{ profile.avatar.url }}" alt="Avatar">
+                    <p>{{ profile.user.username }}</p>
+                </div>
+            {% endfor %}
+            <div class="pagination">
+                {% if not_followed_profiles.has_previous %}
+                    <a href="?page={{ not_followed_profiles.previous_page_number }}">Предыдущая</a>
+                {% endif %}
+                {% if not_followed_profiles.has_next %}
+                    <a href="?page={{ not_followed_profiles.next_page_number }}">Следующая</a>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+</body>
+</html>
